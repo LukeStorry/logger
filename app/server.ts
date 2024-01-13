@@ -30,12 +30,13 @@ export async function saveLogToSheet(
   formData: FormData,
 ): Promise<string> {
   "use server";
-  const { sheet, log } = Object.fromEntries(formData.entries());
+  const { sheet, log, date } = Object.fromEntries(formData.entries());
 
   if (!log || typeof log !== "string") return "Invalid log";
   if (!sheet || typeof sheet !== "string") return "Invalid sheet name";
+  if (date && typeof date !== "string") return "Invalid date";
 
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date(date || Date.now()).toISOString();
 
   try {
     const doc = await getDoc();

@@ -14,6 +14,8 @@ export function Form({ sheetTitles }: { sheetTitles: string[] }) {
         className="mb-10 h-8 w-full rounded p-2 "
       />
 
+      <input type="datetime-local" name="date" className=" mr-4 rounded p-2 " />
+
       <select name="sheet" className="rounded p-2">
         {sheetTitles.map((sheet) => (
           <option key={sheet}>{sheet}</option>
@@ -33,7 +35,7 @@ function SubmitButton() {
       type="submit"
       disabled={pending}
       className={
-        "ml-48 w-20 rounded p-3 text-white " +
+        "ml-8 w-20 rounded p-3 text-white " +
         (pending ? " bg-cyan-600 " : " bg-cyan-800 ")
       }
     >
