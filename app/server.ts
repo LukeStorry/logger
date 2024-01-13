@@ -9,8 +9,6 @@ async function getDoc(): Promise<GoogleSpreadsheet> {
   if (!SPREADSHEET_ID || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY)
     throw new Error("Missing env vars");
 
-  console.log({ GOOGLE_SERVICE_ACCOUNT_EMAIL });
-
   const serviceAccountAuth = new JWT({
     email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
     key: GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
@@ -24,8 +22,7 @@ async function getDoc(): Promise<GoogleSpreadsheet> {
 
 export async function getSheetTitles() {
   const doc = await getDoc();
-  const sheetOptions = Object.keys(doc.sheetsByTitle);
-  return sheetOptions;
+  return Object.keys(doc.sheetsByTitle);
 }
 
 export async function saveLogToSheet(
@@ -43,10 +40,10 @@ export async function saveLogToSheet(
   try {
     const doc = await getDoc();
     await doc.sheetsByTitle[sheet].addRow({ log, timestamp });
-
-    return `Added ${timestamp}: ${log} to ${sheet}`;
   } catch (error: any) {
     console.error(error);
     return `Error saving to spreadsheet - ${error.message}`;
   }
+
+  return `Added ${timestamp}: ${log} to ${sheet}`;
 }

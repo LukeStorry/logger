@@ -1,6 +1,6 @@
 "use server";
-import { getSheetTitles } from "./actions";
-import { Form } from "./Form";
+import { getSheetTitles } from "./server";
+import { Form } from "./client";
 
 export default async function Page() {
   return (

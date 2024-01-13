@@ -1,22 +1,6 @@
 "use client";
 import { useFormState, useFormStatus } from "react-dom";
-import { saveLogToSheet } from "./actions";
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className={
-        "ml-48 w-20 rounded p-3 text-white " +
-        (pending ? " bg-cyan-600 " : " bg-cyan-800 ")
-      }
-    >
-      {pending ? "Saving" : "Save"}
-    </button>
-  );
-}
+import { saveLogToSheet } from "./server";
 
 export function Form({ sheetTitles }: { sheetTitles: string[] }) {
   const [result, action] = useFormState(saveLogToSheet, "");
@@ -39,5 +23,21 @@ export function Form({ sheetTitles }: { sheetTitles: string[] }) {
       <SubmitButton />
       {result && <div className="mt-10 text-center text-white">{result}</div>}
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className={
+        "ml-48 w-20 rounded p-3 text-white " +
+        (pending ? " bg-cyan-600 " : " bg-cyan-800 ")
+      }
+    >
+      {pending ? "Saving" : "Save"}
+    </button>
   );
 }
