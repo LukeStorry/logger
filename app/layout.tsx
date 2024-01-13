@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Merienda } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Merienda({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "log",
-  description: "Basic log",
+  description: "Basic loggger to Sheets",
 };
 
 export default function RootLayout({
@@ -16,7 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={font.className}>
+        <main className="min-h-screen bg-slate-800 p-1 py-24 text-lg md:px-24">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
