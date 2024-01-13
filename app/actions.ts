@@ -22,18 +22,29 @@ async function getDoc(): Promise<GoogleSpreadsheet> {
   return doc;
 }
 
-export async function saveLog(_: any, formData: FormData): Promise<string> {
-  const log = formData.get("log") as string;
-  if (!log) return "Error - empty input!";
+export async function getSheetTitles() {
+  const doc = await getDoc();
+  const sheetOptions = Object.keys(doc.sheetsByTitle);
+  return sheetOptions;
+}
+
+export async function saveLogToSheet(
+  _prevState: string,
+  formData: FormData,
+): Promise<string> {
+  "use server";
+  const { sheet, log } = Object.fromEntries(formData.entries());
+
+  if (!log || typeof log !== "string") return "Invalid log";
+  if (!sheet || typeof sheet !== "string") return "Invalid sheet name";
 
   const timestamp = new Date().toISOString();
-  const newRow = { log, timestamp };
-  console.log("New Row: ", newRow);
 
   try {
     const doc = await getDoc();
-    await doc.sheetsByTitle["personal"].addRow(newRow);
-    return `Added ${timestamp}: ${log}`;
+    await doc.sheetsByTitle[sheet].addRow({ log, timestamp });
+
+    return `Added ${timestamp}: ${log} to ${sheet}`;
   } catch (error: any) {
     console.error(error);
     return `Error saving to spreadsheet - ${error.message}`;
