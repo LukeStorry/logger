@@ -2,7 +2,8 @@ import { checkPasskey, getCategories, getOutputUrl } from "./server";
 import { Form } from "./client";
 
 export default async function Page({ searchParams, params }: any) {
-  const authorised = await checkPasskey(Object.keys(searchParams)[0]);
+  const passkey = Object.keys(searchParams)[0];
+  const authorised = passkey ? await checkPasskey(passkey) : false;
   const categories = authorised ? await getCategories() : ["default"];
 
   return (
