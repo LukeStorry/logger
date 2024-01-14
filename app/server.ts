@@ -2,10 +2,14 @@
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
-async function getDoc(): Promise<GoogleSpreadsheet> {
-  const { SPREADSHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY } =
-    process.env;
+const {
+  SPREADSHEET_ID,
+  GOOGLE_SERVICE_ACCOUNT_EMAIL,
+  GOOGLE_PRIVATE_KEY,
+  PASSKEY,
+} = process.env;
 
+async function getDoc(): Promise<GoogleSpreadsheet> {
   if (!SPREADSHEET_ID || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY)
     throw new Error("Missing env vars");
 
@@ -20,7 +24,19 @@ async function getDoc(): Promise<GoogleSpreadsheet> {
   return doc;
 }
 
-export async function getSheetTitles() {
+export async function getOutputUrl() {
+  return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}`;
+}
+
+export async function checkPasskey(params: any) {
+  const passkey = Object.keys(params)[0];
+  if (passkey === PASSKEY) return true;
+
+  console.log("Invalid passkey", { passkey, PASSKEY });
+  return false;
+}
+
+export async function getCategories() {
   const doc = await getDoc();
   return Object.keys(doc.sheetsByTitle);
 }
@@ -30,21 +46,27 @@ export async function saveLogToSheet(
   formData: FormData,
 ): Promise<string> {
   "use server";
-  const { sheet, log, date } = Object.fromEntries(formData.entries());
+  const {
+    log,
+    date,
+    category = "default",
+  } = Object.fromEntries(formData.entries());
 
   if (!log || typeof log !== "string") return "Invalid log";
-  if (!sheet || typeof sheet !== "string") return "Invalid sheet name";
+  if (category && typeof category !== "string") return "Invalid category";
   if (date && typeof date !== "string") return "Invalid date";
 
   const timestamp = new Date(date || Date.now()).toISOString();
 
   try {
     const doc = await getDoc();
-    await doc.sheetsByTitle[sheet].addRow({ log, timestamp });
+    const sheet = doc.sheetsByTitle[category];
+    if (!sheet) throw new Error(`No sheet found for category "${category}"`);
+    await sheet.addRow({ log, timestamp });
   } catch (error: any) {
     console.error(error);
     return `Error saving to spreadsheet - ${error.message}`;
   }
 
-  return `Added ${timestamp}: ${log} to ${sheet}`;
+  return `Added "${log}" to ${category} category at ${timestamp}`;
 }
