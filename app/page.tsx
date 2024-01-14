@@ -1,8 +1,10 @@
-"use server";
 import { checkPasskey, getCategories, getOutputUrl } from "./server";
 import { Form } from "./client";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ searchParams }: { searchParams: any }) {
+  console.log({ searchParams });
   const authorised = await checkPasskey(searchParams);
   const categories = authorised ? await getCategories() : ["default"];
 
