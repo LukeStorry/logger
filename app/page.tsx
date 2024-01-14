@@ -3,7 +3,13 @@ import { Form } from "./client";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ searchParams }: { searchParams: any }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   console.log({ searchParams });
   const authorised = await checkPasskey(searchParams);
   const categories = authorised ? await getCategories() : ["default"];
@@ -12,6 +18,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
     <main className="min-h-screen bg-slate-800 p-1 py-24 md:px-24">
       <div className="mx-auto items-center rounded border border-white bg-cyan-500 p-1 py-10 md:px-10">
         <Form categories={categories} showSettings={authorised} />
+        {JSON.stringify({ params, searchParams }, null, 2)}
       </div>
 
       <a href={await getOutputUrl()} target="_blank">
