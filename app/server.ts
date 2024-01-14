@@ -31,8 +31,7 @@ export async function getOutputUrl() {
 
 export async function checkPasskey(passkey: string) {
   if (passkey === PASSKEY) return true;
-
-  console.log("Invalid passkey", { passkey, PASSKEY });
+  if (passkey) console.log("Invalid passkey", { passkey, PASSKEY });
   return false;
 }
 
