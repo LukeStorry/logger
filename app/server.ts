@@ -1,6 +1,7 @@
 "use server";
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
+import { z } from 'zod';
 
 const {
   SPREADSHEET_ID,
@@ -40,22 +41,22 @@ export async function getCategories() {
   return Object.keys(doc.sheetsByTitle);
 }
 
+
+const schema = z.object({
+  log: z.string().min(1).max(1000),
+  date: z.string().optional().transform(str => new Date(str || Date.now())),
+  category: z.string().optional().default("default"),
+});
+
 export async function saveLogToSheet(
   _prevState: string,
   formData: FormData,
 ): Promise<string> {
-  "use server";
-  const {
-    log,
-    date,
-    category = "default",
-  } = Object.fromEntries(formData.entries());
+  const result = schema.safeParse(Object.fromEntries(formData.entries()));
+  if (!result.success) return result.error.errors.map(e => `${e.path}: ${e.message}`).join(", ");
 
-  if (!log || typeof log !== "string") return "Invalid log";
-  if (category && typeof category !== "string") return "Invalid category";
-  if (date && typeof date !== "string") return "Invalid date";
-
-  const timestamp = new Date(date || Date.now()).toISOString();
+  const { log, date, category } = result.data;
+  const timestamp = date.toISOString();
 
   try {
     const doc = await getDoc();
