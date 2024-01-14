@@ -28,8 +28,7 @@ export async function getOutputUrl() {
   return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}`;
 }
 
-export async function checkPasskey(params: any) {
-  const passkey = Object.keys(params)[0];
+export async function checkPasskey(passkey: string) {
   if (passkey === PASSKEY) return true;
 
   console.log("Invalid passkey", { passkey, PASSKEY });
