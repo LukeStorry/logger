@@ -1,7 +1,7 @@
 "use server";
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
-import { z } from 'zod';
+import { z } from "zod";
 
 const {
   SPREADSHEET_ID,
@@ -41,10 +41,12 @@ export async function getCategories() {
   return Object.keys(doc.sheetsByTitle);
 }
 
-
 const schema = z.object({
   log: z.string().min(1).max(1000),
-  date: z.string().optional().transform(str => new Date(str || Date.now())),
+  date: z
+    .string()
+    .optional()
+    .transform((str) => new Date(str || Date.now())),
   category: z.string().optional().default("default"),
 });
 
@@ -53,7 +55,8 @@ export async function saveLogToSheet(
   formData: FormData,
 ): Promise<string> {
   const result = schema.safeParse(Object.fromEntries(formData.entries()));
-  if (!result.success) return result.error.errors.map(e => `${e.path}: ${e.message}`).join(", ");
+  if (!result.success)
+    return result.error.errors.map((e) => `${e.path}: ${e.message}`).join(", ");
 
   const { log, date, category } = result.data;
   const timestamp = date.toISOString();
