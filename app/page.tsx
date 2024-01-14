@@ -15,7 +15,7 @@ export default async function Page({ searchParams }: any) {
       <a href={await getOutputUrl()} target="_blank">
         -
       </a>
-      { passkey }
+      { searchParams }
     </main>
   );
 }
