@@ -10,12 +10,12 @@ export default async function Page({ searchParams }: any) {
     <main className="min-h-screen bg-slate-800 p-1 py-24 md:px-24">
       <div className="mx-auto items-center rounded border border-white bg-cyan-500 p-1 py-10 md:px-10">
         <Form categories={categories} showSettings={authorised} />
-      {JSON.stringify({ searchParams, passkey })}
       </div>
 
       <a href={await getOutputUrl()} target="_blank">
         -
       </a>
+      { passkey }
     </main>
   );
 }
