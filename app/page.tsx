@@ -1,6 +1,8 @@
 import { checkPasskey, getCategories, getOutputUrl } from "./server";
 import { Form } from "./client";
 
+export const dynamic = "force-dynamic"; // Only way to make searchParams actually work??
+
 export default async function Page({ searchParams }: any) {
   const passkey = Object.keys(searchParams)[0];
   const authorised = passkey ? await checkPasskey(passkey) : false;
@@ -15,7 +17,6 @@ export default async function Page({ searchParams }: any) {
       <a href={await getOutputUrl()} target="_blank">
         -
       </a>
-      { searchParams }
     </main>
   );
 }
